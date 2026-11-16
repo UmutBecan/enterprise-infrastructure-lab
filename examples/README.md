@@ -13,7 +13,8 @@ Small, runnable or checkable pieces that go with the documents. Everything uses 
 Run what can run:
 
 ```bash
-make test        # restore test (needs bash, tar, sha256sum)
+make test           # shell restore test + unit tests (needs bash, tar, sha256sum, python3)
+make restore-drill  # python tools/restore_drill.py: backup, loss, restore, verify
 ```
 
 Related documents: [backup-recovery](../docs/backup-recovery.md), [documentation-sync](../docs/documentation-sync.md), [access-model](../docs/access-model.md).

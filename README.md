@@ -2,6 +2,31 @@
 
 > Infrastructure patterns, quality gates and an AI-agent operating model for a small engineering lab, documented the way they would be run in production.
 
+## Run a restore drill
+
+A backup is only real once it has been restored and compared. This drill needs no cloud account and no admin rights; it uses a temporary directory and the Python standard library only.
+
+```bash
+python tools/restore_drill.py        # or: make restore-drill
+```
+
+It creates sample data, writes a SHA-256 manifest, backs up to `tar.gz`, deletes the source (simulated loss), restores to a separate path and compares hashes and file count. Exit code 0 means PASS, 1 means FAIL. `--tamper` corrupts the backup first, so you can see a FAIL.
+
+Real output (Windows 11 Pro 10.0.26300, Python 3.12.10, run on 2026-11-17):
+
+```text
+[1/5] sample data: 4 files
+[2/5] backup written: backup.tar.gz (1957 bytes), manifest has 4 SHA-256 entries
+[3/5] simulated loss: source directory deleted (exists=False)
+[4/5] restored to a separate path: 4 files
+[5/5] verification: all hashes match, file count matches
+RESULT: PASS (0.05s)
+```
+
+Tests: `python -m unittest discover -s tests` ran 8 tests, OK, on the same machine (`make test` runs the same tests plus the shell restore test, but `make` is not installed on that machine, so the Makefile targets themselves were not run there). The CI workflow runs the same unittest command on ubuntu-latest. The drill covers file-level backup and restore of a small sample only; it does not test your real backup tool, storage or restore time.
+
+Status of the examples: only `examples/backup/restore-test.sh` and this drill are executed by tests. The Terraform example in `examples/terraform/main.tf` is **not applied or validated** (see [examples/README.md](examples/README.md)).
+
 ## What it does and what it makes easier
 
 - Turns 'how should this be run?' into short, reviewable documents: principles, a reference design, and how to prove it works.
@@ -48,19 +73,19 @@ The layers, from governance down to the platform. Topology, data flows and the h
 
 | Area | Document | Status |
 |---|---|---|
-| Whole stack, hardware to services | docs/end-to-end-architecture.md | in use |
-| Topology diagrams and layers (host, containers, VMs, app and service layers) | docs/topology.md | in use |
-| Layered architecture and decisions | docs/architecture.md | in use |
-| Administrative access model | docs/access-model.md | in use |
-| Documentation as code | docs/documentation-sync.md | in use |
-| Network segmentation and firewalling | docs/network-segmentation.md | reference pattern |
-| Backup and recovery | docs/backup-recovery.md | reference pattern |
-| Quality engineering (QA, E2E, release gates) | docs/quality-engineering.md | in use |
+| Whole stack, hardware to services | [docs/end-to-end-architecture.md](docs/end-to-end-architecture.md) | in use |
+| Topology diagrams and layers (host, containers, VMs, app and service layers) | [docs/topology.md](docs/topology.md) | in use |
+| Layered architecture and decisions | [docs/architecture.md](docs/architecture.md) | in use |
+| Administrative access model | [docs/access-model.md](docs/access-model.md) | in use |
+| Documentation as code | [docs/documentation-sync.md](docs/documentation-sync.md) | in use |
+| Network segmentation and firewalling | [docs/network-segmentation.md](docs/network-segmentation.md) | reference pattern |
+| Backup and recovery | [docs/backup-recovery.md](docs/backup-recovery.md) | reference pattern |
+| Quality engineering (QA, E2E, release gates) | [docs/quality-engineering.md](docs/quality-engineering.md) | in use |
 | Runnable examples: restore test, docs sync, access, Ansible, Terraform | examples/ | restore test runs and is tested; others checked, see examples/README.md |
-| Product measurement with privacy by design | docs/measurement-and-privacy.md | reference pattern; implemented and tested, production rollout pending |
-| Agent engine design | docs/agent-engine.md | in use |
-| Personal knowledge system | docs/second-brain-knowledge-system.md | in use |
-| Architecture decision records | docs/adr/ | in use |
+| Product measurement with privacy by design | [docs/measurement-and-privacy.md](docs/measurement-and-privacy.md) | reference pattern; implemented and tested, production rollout pending |
+| Agent engine design | [docs/agent-engine.md](docs/agent-engine.md) | in use |
+| Personal knowledge system | [docs/second-brain-knowledge-system.md](docs/second-brain-knowledge-system.md) | in use |
+| Architecture decision records | [docs/adr/](docs/adr/) | in use |
 
 Status: 'in use' means practiced in the lab. 'Reference pattern' means a design written for production-style use; where code exists, the status line says how far it has been rolled out.
 
