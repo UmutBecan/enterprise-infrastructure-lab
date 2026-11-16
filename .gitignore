@@ -9,6 +9,10 @@ id_*
 secrets/
 private/
 
+# Restore evidence records name the host and OS user unless --host-label/--operator are given
+restore-evidence*.json
+evidence*.json
+
 # OS / editor
 .DS_Store
 Thumbs.db
