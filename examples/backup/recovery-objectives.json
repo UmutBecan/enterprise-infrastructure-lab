@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "description": "Example recovery objectives per data class. The values are illustrative placeholders for the drill, not recommendations; agree real values with the business owner (see docs/backup-recovery.md).",
+  "classes": {
+    "critical":  { "rto_minutes": 60,   "rpo_minutes": 15 },
+    "important": { "rto_minutes": 240,  "rpo_minutes": 240 },
+    "standard":  { "rto_minutes": 1440, "rpo_minutes": 1440 }
+  }
+}
